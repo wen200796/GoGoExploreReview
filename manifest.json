@@ -2,15 +2,16 @@
   "manifest_version": 3,
   "name": "狗勾挖評論",
   "version": "1.0",
-  "description": "知名搜尋引擎店家評論分析", 
+  "description": "知名搜尋引擎店家評論分析",
   "action": {
     "default_title": "Open Side Panel"
   },
   "side_panel": {
-      "default_path": "01_startToUse/acceptPolicy.html"
+    "default_path": "initialSidepanel.html"
   },
   "permissions": [
     "tabs",
-    "sidePanel"
+    "sidePanel",
+    "storage"
   ]
 }

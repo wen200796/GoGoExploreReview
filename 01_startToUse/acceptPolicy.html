@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>狗勾控評論 - 使用須知</title>
+    <title>狗勾挖評論 - 使用須知</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -15,6 +16,7 @@
             min-height: 100vh;
             background-color: #f5f5f5;
         }
+
         .container {
             width: 350px;
             height: 800px;
@@ -24,37 +26,44 @@
             padding: 20px;
             box-sizing: border-box;
         }
+
         .logo {
             height: 50px;
             width: 50px;
             background-color: #ccc;
             margin: 0 auto 20px;
         }
+
         .title {
             font-size: 24px;
             margin-bottom: 10px;
         }
+
         .description {
             font-size: 14px;
             color: #666;
             line-height: 1.5;
             margin-bottom: 20px;
         }
+
         .placeholder {
             width: 100%;
             height: 400px;
             background-color: #ddd;
             margin-bottom: 20px;
         }
+
         .checkbox {
             display: flex;
             align-items: center;
             justify-content: center;
             margin-bottom: 20px;
         }
+
         .checkbox input {
             margin-right: 10px;
         }
+
         .button {
             display: inline-block;
             padding: 10px 20px;
@@ -64,23 +73,47 @@
             border-radius: 5px;
             font-size: 16px;
         }
+
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: navy;
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .button:disabled {
+            background-color: #ccc;
+            /* 禁用狀態的背景色 */
+            color: white;
+            /* 禁用狀態的字體顏色 */
+            cursor: not-allowed;
+            /* 禁用狀態的游標 */
+            pointer-events: not-allowed;
+            /* 禁用點擊事件 */
+        }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="logo"></div>
         <div class="title">使用須知</div>
         <div class="description">
             您會看到這則通知，<br>
-            是由於瀏覽器未偵測到儲存的同意紀錄<br>
-            或同意紀錄失效
+            是由於瀏覽器未偵測到儲存的同意紀錄 (同意紀錄被刪除)<br>
+            或同意紀錄失效 (插件重大更新、時效過期)
         </div>
         <div class="placeholder"></div>
         <div class="checkbox">
-            <input type="checkbox" id="agree">
+            <input type="checkbox" id="agree-policy">
             <label for="agree">我同意遵守狗勾挖評論使用須知</label>
         </div>
-        <a href="#" class="button">開始使用</a>
+        <button disabled href="#" id="accept-to-start-use" class="button">開始使用</button>
     </div>
 </body>
+<script src="acceptPolicy.js" defer></script>
+
 </html>

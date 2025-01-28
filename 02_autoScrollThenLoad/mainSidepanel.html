@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>狗勾挖評論</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      width: 350px;
+      height: 100%;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    .header {
+      padding: 20px;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .card {
+      background-color: #f9f9f9;
+      padding: 20px;
+      margin: 0 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .card p {
+      font-size: 12px;
+      margin: 3px;
+    }
+
+    .button {
+      display: flex;
+      justify-content: center;
+      margin: 10px;
+    }
+
+    .button button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 10px 20px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .button button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+
+    .place-info{
+      color: gray;
+    }
+
+    .status {
+      text-align: center;
+      margin: 20px 0;
+      font-size: 14px;
+    }
+
+    .dashboard {
+      margin: 20px;
+      height: 350px;
+      background-color: #e0e0e0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 16px;
+      color: #333;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="header">狗勾挖評論</div>
+    <div class="card">
+      <p>請確認頁面為</p>
+      <div style="padding: 10px;">
+        <p id="check-url"><i class="fa-regular fa-circle-question"></i>  Google 搜尋結果 或 地圖地點頁面</p>
+        <p id="check-review-blocl"><i class="fa-regular fa-circle-question"></i>  並且已切換至評論區塊</p>
+      </div>
+
+      <p>地點名稱：<span class="place-info">未偵測到資訊</span></p>
+      <p>顯示星星數：<span class="place-info">未偵測到資訊</span></p>
+      <p>評論則數：<span class="place-info">未偵測到資訊</span></p>
+      <div class="status">狀態：尚未偵測頁面</div>
+      <div class="button">
+        <button>偵測當前頁面</button>
+      </div>
+    </div>
+    <div class="dashboard">儀錶板區塊</div>
+  </div>
+</body>
+<script src="mainSidepanel.js" defer></script>
+</html>
