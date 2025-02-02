@@ -9,6 +9,7 @@
   "permissions": [
     "sidePanel",
     "storage",
+    "scripting",
     "tabs",
     "activeTab"
   ],
