@@ -1,8 +1,7 @@
 {
-  "name": "狗勾挖評論",
+  "name": "Your Extension Name",
+  "version": "1.0",
   "manifest_version": 3,
-  "version": "1.0.0.0",
-  "description": "知名搜尋引擎店家評論分析",
   "action": {
     "default_title": "Click to open side panel"
   },
@@ -17,9 +16,9 @@
     "<all_urls>"
   ],
   "side_panel": {
-    "default_path": "initialSidepanel.html"
+    "default_path": "page/initialSidepanel.html"
   },
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "dist/background.js"
   }
 }
