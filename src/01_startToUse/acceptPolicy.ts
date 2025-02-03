@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const agreeCheckbox = document.getElementById('agree-policy');
-  const acceptButton = document.getElementById('accept-to-start-use');
+  const agreeCheckbox = document.getElementById('agree-policy') as HTMLInputElement | null;
+  const acceptButton = document.getElementById('accept-to-start-use') as HTMLButtonElement | null;
 
   if (!agreeCheckbox || !acceptButton) {
     console.error("找不到必要的元素！");
@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 延遲後跳轉
     setTimeout(() => {
-      window.location.href = '/02_autoScrollThenLoad/mainSidepanel.html'; // 使用絕對路徑
+      window.location.href = '/page/02_autoScrollThenLoad/mainSidepanel.html'; // 使用絕對路徑
     }, 500); // 延遲500毫秒跳轉
   });
 });
