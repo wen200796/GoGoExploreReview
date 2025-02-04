@@ -1,3 +1,5 @@
+import { ValidUrlPrefix } from "./domain/enum/validUrlPrefix.js";
+console.log("Background Script Loaded");
 // 當點擊擴展圖標時
 chrome.action.onClicked.addListener((tab: chrome.tabs.Tab) => {
   if (tab.id) {
@@ -26,25 +28,26 @@ chrome.runtime.onMessage.addListener((request: any, sender: chrome.runtime.Messa
 // 處理另一個消息
 chrome.runtime.onMessage.addListener((request: any, sender: chrome.runtime.MessageSender, sendResponse: (response?: any) => void) => {
   if (request.action === "CHECK_ACTIVE_TAB_COMMENT_SECTION") {
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs: chrome.tabs.Tab[]) => {
       if (tabs.length === 0) {
         sendResponse({ hasFoundCommentSection: false });
         return;
       }
       const activeTab = tabs[0];
-      const url = activeTab.url;
+      const url = activeTab.url || '';
 
       // 根據 URL 決定要查找的元素選擇器和檢查邏輯
       let elementSelector: string;
       let checkFunction: (selector: string) => boolean;
-      if (url && url.startsWith(ValidUrlPrefix.MAP)) {
+
+      if (url.startsWith(ValidUrlPrefix.MAP)) {
         elementSelector = ".hh2c6[aria-label*='評論'][aria-selected='true']";
-        checkFunction = (selector) => {
+        checkFunction = (selector: string): boolean => {
           return document.querySelector(selector) !== null;
         };
-      } else if (url && url.startsWith(ValidUrlPrefix.SEARCH)) {
+      } else if (url.startsWith(ValidUrlPrefix.SEARCH)) {
         elementSelector = ".zzG8g[aria-selected='true']";
-        checkFunction = (selector) => {
+        checkFunction = (selector: string): boolean => {
           const elements = document.querySelectorAll(selector);
           for (const element of elements) {
             const span = element.querySelector('span');
@@ -56,7 +59,7 @@ chrome.runtime.onMessage.addListener((request: any, sender: chrome.runtime.Messa
         };
       } else {
         elementSelector = "defaultSelector";
-        checkFunction = (selector) => {
+        checkFunction = (selector: string): boolean => {
           return document.querySelector(selector) !== null;
         };
       }
@@ -65,14 +68,7 @@ chrome.runtime.onMessage.addListener((request: any, sender: chrome.runtime.Messa
       chrome.scripting.executeScript({
         target: { tabId: activeTab.id! },
         func: (selector: string) => {
-          const elements = document.querySelectorAll(selector);
-          for (const element of elements) {
-            const span = element.querySelector('span');
-            if (span && span.innerText.includes("評論")) {
-              return true;
-            }
-          }
-          return false;
+          return document.querySelector(selector) !== null;
         },
         args: [elementSelector]
       }, (results: any) => {
