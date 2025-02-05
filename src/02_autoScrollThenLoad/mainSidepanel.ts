@@ -50,13 +50,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
   mainButton.addEventListener('click', async () => {
     console.log('main button clicked');
+    mainVariables.mainStatus = mainStatusDisplayTextMap.getKey(mainStatusTextElement.innerText) as MainStatusEnum;
     const func = mainStatusFunctionMap.get(mainVariables.mainStatus);
     if (func) {
       await func(mainVariables);  // 執行函數，並傳遞 mainVariable 作為參數
+    } else {
+      mainStatusTextElement.innerText = MainStatusDisplayText.ERROR;
+      return;
     }
 
     mainVariables.mainStatus = rejudgeMainStatus(mainVariables);
-    mainStatusTextElement.innerText = mainStatusDisplayTextMap.getValue(mainVariables.mainStatus) ?? '發生錯誤';
+    mainStatusTextElement.innerText = mainStatusDisplayTextMap.getValue(mainVariables.mainStatus) ?? MainStatusDisplayText.ERROR;
   })
 
 });
