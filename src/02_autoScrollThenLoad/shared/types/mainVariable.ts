@@ -1,4 +1,5 @@
-import { MainStatusEnum } from "../enum/mainStatusEnum.js";
+import { MainStatusEnum } from "../constants/mainStatusEnum.js";
+
 
 export interface MainVariable {
   mainStatus: MainStatusEnum;

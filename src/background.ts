@@ -1,4 +1,5 @@
-import { ValidUrlPrefix } from "./domain/enum/validUrlPrefix.js";
+import { ValidUrlPrefix } from "./02_autoScrollThenLoad/shared/constants/validUrlPrefix.js";
+
 console.log("Background Script Loaded");
 // 當點擊擴展圖標時
 chrome.action.onClicked.addListener((tab: chrome.tabs.Tab) => {
