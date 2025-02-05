@@ -3,13 +3,19 @@ import { ValidUrlPrefix } from "../constants/validUrlPrefix.js";
 import { MainVariable } from "../types/mainVariable.js";
 
 
-export async function detectUrlAndSection(mainVariables: MainVariable) {
-  const isValid: boolean = await detectCurrentPageUrl(mainVariables);
+export async function detectFocusPlace(mainVariables: MainVariable) {
+  await detectCurrentPageUrl(mainVariables);
   console.log("當前頁面網址是否有效：", mainVariables.isCurrentUrlValid);
-  if (mainVariables.isCurrentUrlValid === true) {
-    const hasFound = await detectCommentSection(mainVariables);
-    console.log("是否找到評論區：", mainVariables.hasFoundCommentSection);
+  if (mainVariables.isCurrentUrlValid === false) {
+    return;
   }
+  //await detectPlaceInfo(mainVariables);
+  if (mainVariables.hasFoundPlaceInfo === false) {
+    console.log("是否找到地點資訊卡：", mainVariables.hasFoundPlaceInfo);
+    return;
+  }
+  await detectCommentSection(mainVariables);
+  console.log("是否找到評論區：", mainVariables.hasFoundCommentSection);
 }
 
 async function detectCurrentPageUrl(mainVariables: MainVariable): Promise<boolean> {
@@ -19,7 +25,7 @@ async function detectCurrentPageUrl(mainVariables: MainVariable): Promise<boolea
   try {
     const currentUrl: string = await getActiveTabUrl(); // 使用 await 等待網址
     console.log("當前頁面網址：", currentUrl);
-    if (currentUrl.startsWith(ValidUrlPrefix.MAP) || currentUrl.startsWith(ValidUrlPrefix.SEARCH)) {
+    if (currentUrl.startsWith(ValidUrlPrefix.MAP)) {
       mainVariables.isCurrentUrlValid = true;
       mainVariables.currentPageUrl = currentUrl;
       return true;
@@ -34,6 +40,47 @@ async function detectCurrentPageUrl(mainVariables: MainVariable): Promise<boolea
 }
 
 function getActiveTabUrl(): Promise<string> {
+  return new Promise((resolve, reject) => {
+    chrome.runtime.sendMessage({ action: "GET_ACTIVE_TAB_URL" }, (response: { url?: string }) => {
+      if (chrome.runtime.lastError) {
+        console.error("Error:", chrome.runtime.lastError.message);
+        reject(chrome.runtime.lastError.message); // 發生錯誤時拒絕 Promise
+        return;
+      }
+
+      if (response && response.url) {
+        resolve(response.url); // 成功時回傳網址
+      } else {
+        console.error("無法取得目前的分頁資訊");
+        resolve(''); // 若無法取得網址，回傳空字串
+      }
+    });
+  });
+}
+
+async function detectPlaceInfo(mainVariables: MainVariable): Promise<boolean> {
+  console.log('detecting place info')
+  mainVariables.isCurrentUrlValid = false;
+  mainVariables.hasFoundPlaceInfo = false;
+  mainVariables.hasFoundCommentSection = false;
+  try {
+    const currentUrl: string = await getActiveTabUrl(); // 使用 await 等待網址
+    console.log("當前頁面網址：", currentUrl);
+    if (currentUrl.startsWith(ValidUrlPrefix.MAP)) {
+      mainVariables.isCurrentUrlValid = true;
+      mainVariables.currentPageUrl = currentUrl;
+      return true;
+    } else {
+      mainVariables.currentPageUrl = '';
+      return false;
+    }
+  } catch (error) {
+    console.error("Failed to get active tab URL:", error);
+    return false; // 發生錯誤時，返回 false
+  }
+}
+
+function getActiveTabPlaceInfo(): Promise<string> {
   return new Promise((resolve, reject) => {
     chrome.runtime.sendMessage({ action: "GET_ACTIVE_TAB_URL" }, (response: { url?: string }) => {
       if (chrome.runtime.lastError) {

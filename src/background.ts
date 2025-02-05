@@ -46,18 +46,6 @@ chrome.runtime.onMessage.addListener((request: any, sender: chrome.runtime.Messa
         checkFunction = (selector: string): boolean => {
           return document.querySelector(selector) !== null;
         };
-      } else if (url.startsWith(ValidUrlPrefix.SEARCH)) {
-        elementSelector = ".zzG8g[aria-selected='true']";
-        checkFunction = (selector: string): boolean => {
-          const elements = document.querySelectorAll(selector);
-          for (const element of elements) {
-            const span = element.querySelector('span');
-            if (span && span.innerText.includes("評論")) {
-              return true;
-            }
-          }
-          return false;
-        };
       } else {
         elementSelector = "defaultSelector";
         checkFunction = (selector: string): boolean => {
