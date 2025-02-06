@@ -1,17 +1,11 @@
 
-import { BidirectionalMap } from "../common/models/bidirectionalMap.js";
+import { MainStatusDisplayTextMap } from "./shared/config/mainStatusInfoSetting.js";
 import { MainStatusDisplayText } from "./shared/constants/mainStatusDisplayText.js";
 import { MainStatusEnum } from "./shared/constants/mainStatusEnum.js";
 import { MainVariable } from "./shared/types/mainVariable.js";
 import { detectFocusPlace } from "./shared/utils/detectFocusPlace.js";
 
 
-const mainStatusDisplayTextMap = new BidirectionalMap<string, string>();
-mainStatusDisplayTextMap.set(MainStatusEnum.AWAIT_DETECT, MainStatusDisplayText.AWAIT_DETECT);
-mainStatusDisplayTextMap.set(MainStatusEnum.WRONG_URL, MainStatusDisplayText.WRONG_URL);
-mainStatusDisplayTextMap.set(MainStatusEnum.NO_FOCUS_PLACE_INFO, MainStatusDisplayText.NO_FOCUS_PLACE_INFO);
-mainStatusDisplayTextMap.set(MainStatusEnum.NOT_COMMENT_SECTION, MainStatusDisplayText.NOT_COMMENT_SECTION);
-mainStatusDisplayTextMap.set(MainStatusEnum.READY_TO_START, MainStatusDisplayText.READY_TO_START);
 
 type StatusFunction = (mainVariable: MainVariable) => void;
 const mainStatusFunctionMap = new Map<MainStatusEnum, StatusFunction>([
@@ -39,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
-  mainVariables.mainStatus = mainStatusDisplayTextMap.getKey(mainStatusTextElement.innerText) as MainStatusEnum;
+  mainVariables.mainStatus = MainStatusDisplayTextMap.getKey(mainStatusTextElement.innerText) as MainStatusEnum;
 
   if (!mainButton) {
     console.error("找不到主按鈕！");
@@ -50,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   mainButton.addEventListener('click', async () => {
     console.log('main button clicked');
-    mainVariables.mainStatus = mainStatusDisplayTextMap.getKey(mainStatusTextElement.innerText) as MainStatusEnum;
+    mainVariables.mainStatus = MainStatusDisplayTextMap.getKey(mainStatusTextElement.innerText) as MainStatusEnum;
     const func = mainStatusFunctionMap.get(mainVariables.mainStatus);
     if (func) {
       await func(mainVariables);  // 執行函數，並傳遞 mainVariable 作為參數
@@ -60,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     mainVariables.mainStatus = rejudgeMainStatus(mainVariables);
-    mainStatusTextElement.innerText = mainStatusDisplayTextMap.getValue(mainVariables.mainStatus) ?? MainStatusDisplayText.ERROR;
+    mainStatusTextElement.innerText = MainStatusDisplayTextMap.getValue(mainVariables.mainStatus) ?? MainStatusDisplayText.ERROR;
   })
 
 });
