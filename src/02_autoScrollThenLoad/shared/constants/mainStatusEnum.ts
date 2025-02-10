@@ -9,5 +9,6 @@ export enum MainStatusEnum {
     DONE_LOADING = 'MS07',
     ANALYZING = 'MS08',
     DONE_ANALYZE = 'MS09',
-    FAIL_ANALYZE = 'MS10'
+    FAIL_ANALYZE = 'MS10',
+    ERROR = 'MS11'
 }

@@ -6,7 +6,7 @@ export interface MainVariable {
   mainStatus: MainStatusEnum;
   currentPageUrl?: string;
   isCurrentUrlValid: boolean;
-  hasFoundPlaceInfo: boolean;
+  hasFoundFocusPlace: boolean;
   plaveBasicInfo?: PlaceBasicInfo;
   hasFoundCommentSection: boolean;
 }

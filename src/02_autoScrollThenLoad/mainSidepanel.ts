@@ -1,5 +1,8 @@
-
-import { MainStatusDisplayTextMap } from "./shared/config/mainStatusInfoSetting.js";
+import { ColorEnum } from "../common/constants/colorEnum.js";
+import { MainStatusButtonTextMap } from "./shared/config/mainStatusInfo/mainStatusButtonMap.js";
+import { MainStatusColorMap } from "./shared/config/mainStatusInfo/mainStatusColorMap.js";
+import { MainStatusDisplayTextMap } from "./shared/config/mainStatusInfo/mainStatusDisplayTextMap.js";
+import { MainButtonTextEnum } from "./shared/constants/MainButtonTextEnum.js";
 import { MainStatusDisplayText } from "./shared/constants/mainStatusDisplayText.js";
 import { MainStatusEnum } from "./shared/constants/mainStatusEnum.js";
 import { MainVariable } from "./shared/types/mainVariable.js";
@@ -22,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const mainVariables: MainVariable = {
     mainStatus: MainStatusEnum.AWAIT_DETECT,
     isCurrentUrlValid: false,
-    hasFoundPlaceInfo: false,
+    hasFoundFocusPlace: false,
     hasFoundCommentSection: false
   };
   const mainButton = document.getElementById('main-button');
@@ -55,31 +58,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
     mainVariables.mainStatus = rejudgeMainStatus(mainVariables);
     mainStatusTextElement.innerText = MainStatusDisplayTextMap.getValue(mainVariables.mainStatus) ?? MainStatusDisplayText.ERROR;
+    mainButton.innerText = MainStatusButtonTextMap.get(mainVariables.mainStatus) ?? MainButtonTextEnum.RE_DETECT;
+    mainButton.style.backgroundColor = MainStatusColorMap.get(mainVariables.mainStatus) ?? ColorEnum.OPERATE_BLUE;
   })
 
 });
 
 
 function rejudgeMainStatus(mainVariables: MainVariable): MainStatusEnum {
-  if (isNotStartMainStatus(mainVariables.mainStatus)) {
-    if (mainVariables.isCurrentUrlValid === false) {
-      return MainStatusEnum.WRONG_URL;
-    }
-
-    if (mainVariables.hasFoundPlaceInfo === false) {
-      return MainStatusEnum.NO_FOCUS_PLACE_INFO;
-    }
-
-    if (mainVariables.hasFoundCommentSection === false) {
-      return MainStatusEnum.NOT_COMMENT_SECTION;
-    }
-
-    return MainStatusEnum.READY_TO_START
+  switch (mainVariables.mainStatus) {
+    case MainStatusEnum.AWAIT_DETECT:
+    case MainStatusEnum.WRONG_URL:
+    case MainStatusEnum.NO_FOCUS_PLACE_INFO:
+    case MainStatusEnum.NOT_COMMENT_SECTION:
+    case MainStatusEnum.READY_TO_START:
+      if (!mainVariables.isCurrentUrlValid) {
+        return MainStatusEnum.WRONG_URL;
+      }
+      if (!mainVariables.hasFoundFocusPlace) {
+        return MainStatusEnum.NO_FOCUS_PLACE_INFO;
+      }
+      if (!mainVariables.hasFoundCommentSection) {
+        return MainStatusEnum.NOT_COMMENT_SECTION;
+      }
+      return MainStatusEnum.READY_TO_START;
+    default:
+      throw new Error('Invalid main status');
   }
-
-  throw new Error('Invalid main status');
-}
-
-function isNotStartMainStatus(mainStatusEnum: MainStatusEnum) {
-  return mainStatusEnum === MainStatusEnum.AWAIT_DETECT || mainStatusEnum === MainStatusEnum.WRONG_URL || mainStatusEnum === MainStatusEnum.NO_FOCUS_PLACE_INFO || mainStatusEnum === MainStatusEnum.NOT_COMMENT_SECTION || mainStatusEnum === MainStatusEnum.READY_TO_START;
 }
