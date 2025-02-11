@@ -30,6 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   const mainButton = document.getElementById('main-button');
   const mainStatusTextElement = document.getElementById('main-status');
+  const placeName = document.getElementById('place-name');
 
   if (!mainStatusTextElement || mainStatusTextElement.innerText === '') {
     console.error("找不到主狀態！");
@@ -40,6 +41,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (!mainButton) {
     console.error("找不到主按鈕！");
+    return;
+  }
+
+  if (!placeName) {
+    console.error("找不到顯示地點名稱元素！");
     return;
   }
 
@@ -60,6 +66,12 @@ document.addEventListener('DOMContentLoaded', () => {
     mainStatusTextElement.innerText = MainStatusDisplayTextMap.getValue(mainVariables.mainStatus) ?? MainStatusDisplayText.ERROR;
     mainButton.innerText = MainStatusButtonTextMap.get(mainVariables.mainStatus) ?? MainButtonTextEnum.RE_DETECT;
     mainButton.style.backgroundColor = MainStatusColorMap.get(mainVariables.mainStatus) ?? ColorEnum.OPERATE_BLUE;
+    
+    if (mainVariables.hasFoundFocusPlace) {
+      placeName.innerText = mainVariables.plaveBasicInfo?.name ?? '偵測異常';
+    } else {
+      placeName.innerText = '未偵測到資訊';
+    }
   })
 
 });
