@@ -1,5 +1,7 @@
+// import { reviewSectionDetectBasicInfo } from './../models/reviewSectionDetectBasicInfo';
 
 import { ValidUrlPrefix } from "../constants/validUrlPrefix.js";
+import { reviewSectionDetectBasicInfo } from "../models/reviewSectionDetectBasicInfo.js";
 import { MainVariable } from "../types/mainVariable.js";
 
 
@@ -13,18 +15,18 @@ export async function detectFocusPlace(mainVariables: MainVariable) {
   if (mainVariables.hasFoundFocusPlace === false) {
     return;
   }
-  console.log("地點名稱：", mainVariables.plaveBasicInfo?.name);
+  console.log("地點名稱：", mainVariables.placeBasicInfo?.name);
 
-  await detectCommentSection(mainVariables);
-  console.log("是否找到評論區：", mainVariables.hasFoundCommentSection);
+  await detectReviewSection(mainVariables);
+  console.log("是否找到評論區：", mainVariables.hasFoundReviewSection);
 }
 
 async function detectCurrentPageUrl(mainVariables: MainVariable): Promise<boolean> {
   console.log('detecting current page url')
   mainVariables.isCurrentUrlValid = false;
   mainVariables.hasFoundFocusPlace = false;
-  mainVariables.plaveBasicInfo = undefined;
-  mainVariables.hasFoundCommentSection = false;
+  mainVariables.placeBasicInfo = undefined;
+  mainVariables.hasFoundReviewSection = false;
   try {
     const currentUrl: string = await getActiveTabUrl(); // 使用 await 等待網址
     console.log("當前頁面網址：", currentUrl);
@@ -34,7 +36,7 @@ async function detectCurrentPageUrl(mainVariables: MainVariable): Promise<boolea
 
       if (isValidMapUrl(currentUrl)) {
         mainVariables.hasFoundFocusPlace = true;
-        mainVariables.plaveBasicInfo = { name: extractPlaceName(currentUrl) };
+        mainVariables.placeBasicInfo = { name: extractPlaceName(currentUrl) };
       }
 
       return true;
@@ -69,33 +71,38 @@ function getActiveTabUrl(): Promise<string> {
 
 
 
-async function detectCommentSection(mainVariables: MainVariable) {
+async function detectReviewSection(mainVariables: MainVariable): Promise<void> {
   console.log('detecting comment section')
   try {
-    const hasFound: boolean = await checkActiveTabCommentSection(); // 使用 await 等待結果
-    mainVariables.hasFoundCommentSection = hasFound;
-    return hasFound;
+    const detectResult: reviewSectionDetectBasicInfo = await checkActiveTabReviewSectionInfo(); // 使用 await 等待結果
+    if (detectResult.hasFoundReviewSection) {
+      mainVariables.hasFoundReviewSection = true;
+      if (mainVariables.placeBasicInfo) {
+        mainVariables.placeBasicInfo.showStarRating = detectResult.showStarRating;
+        mainVariables.placeBasicInfo.showTotalReview = detectResult.showTotalReview;
+      };
+    }
+
   } catch (error) {
     console.error("Failed to check Active Tab Comment Section", error);
-    return false; // 發生錯誤時，返回 false
   }
 
 }
 
-function checkActiveTabCommentSection(): Promise<boolean> {
+function checkActiveTabReviewSectionInfo(): Promise<reviewSectionDetectBasicInfo> {
   return new Promise((resolve, reject) => {
-    chrome.runtime.sendMessage({ action: "CHECK_ACTIVE_TAB_COMMENT_SECTION" }, (response) => {
+    chrome.runtime.sendMessage({ action: "CHECK_ACTIVE_TAB_REVIEW_SECTION" }, (response: reviewSectionDetectBasicInfo) => {
       if (chrome.runtime.lastError) {
         console.error("Error:", chrome.runtime.lastError.message);
         reject(chrome.runtime.lastError.message); // 發生錯誤時拒絕 Promise
         return;
       }
 
-      if (response && response.hasFoundCommentSection) {
-        resolve(response.hasFoundCommentSection); // 回應成功時回傳結果
+      if (response && response.hasFoundReviewSection) {
+        resolve(response); // 回應成功時回傳結果
       } else {
         console.error("無法取得目前分頁是否切換到評論區塊");
-        resolve(false); // 若無法取得結果，回傳 false
+        resolve(new reviewSectionDetectBasicInfo);
       }
     });
   });

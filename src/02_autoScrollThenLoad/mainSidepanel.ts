@@ -15,7 +15,7 @@ const mainStatusFunctionMap = new Map<MainStatusEnum, StatusFunction>([
   [MainStatusEnum.AWAIT_DETECT, detectFocusPlace],
   [MainStatusEnum.WRONG_URL, detectFocusPlace],
   [MainStatusEnum.NO_FOCUS_PLACE_INFO, detectFocusPlace],
-  [MainStatusEnum.NOT_COMMENT_SECTION, detectFocusPlace],
+  [MainStatusEnum.NOT_REVIEW_SECTION, detectFocusPlace],
   [MainStatusEnum.READY_TO_START, detectFocusPlace]
 ])
 
@@ -26,11 +26,13 @@ document.addEventListener('DOMContentLoaded', () => {
     mainStatus: MainStatusEnum.AWAIT_DETECT,
     isCurrentUrlValid: false,
     hasFoundFocusPlace: false,
-    hasFoundCommentSection: false
+    hasFoundReviewSection: false
   };
   const mainButton = document.getElementById('main-button');
   const mainStatusTextElement = document.getElementById('main-status');
   const placeName = document.getElementById('place-name');
+  const placeShowStarRating = document.getElementById('place-show-star-rating');
+  const placeShowTotalReview = document.getElementById('place-show-total-review');
 
   if (!mainStatusTextElement || mainStatusTextElement.innerText === '') {
     console.error("找不到主狀態！");
@@ -46,6 +48,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (!placeName) {
     console.error("找不到顯示地點名稱元素！");
+    return;
+  }
+
+  if (!placeShowStarRating) {
+    console.error("找不到顯示地點評分元素！");
+    return;
+  }
+
+  if (!placeShowTotalReview) {
+    console.error("找不到顯示地點評論數元素！");
     return;
   }
 
@@ -66,11 +78,20 @@ document.addEventListener('DOMContentLoaded', () => {
     mainStatusTextElement.innerText = MainStatusDisplayTextMap.getValue(mainVariables.mainStatus) ?? MainStatusDisplayText.ERROR;
     mainButton.innerText = MainStatusButtonTextMap.get(mainVariables.mainStatus) ?? MainButtonTextEnum.RE_DETECT;
     mainButton.style.backgroundColor = MainStatusColorMap.get(mainVariables.mainStatus) ?? ColorEnum.OPERATE_BLUE;
-    
+
+
+    const detectNothing: string = '未偵測到資訊';
     if (mainVariables.hasFoundFocusPlace) {
-      placeName.innerText = mainVariables.plaveBasicInfo?.name ?? '偵測異常';
+      placeName.innerText = mainVariables.placeBasicInfo?.name ?? '偵測異常';
     } else {
-      placeName.innerText = '未偵測到資訊';
+      placeName.innerText = detectNothing;
+    }
+
+
+    if (mainVariables.hasFoundReviewSection) {
+      console.log('已找到評論區');
+      placeShowStarRating.innerText = mainVariables.placeBasicInfo?.showStarRating?.toString() ?? detectNothing;
+      placeShowTotalReview.innerText = mainVariables.placeBasicInfo?.showTotalReview?.toString() ?? detectNothing;
     }
   })
 
@@ -82,7 +103,7 @@ function rejudgeMainStatus(mainVariables: MainVariable): MainStatusEnum {
     case MainStatusEnum.AWAIT_DETECT:
     case MainStatusEnum.WRONG_URL:
     case MainStatusEnum.NO_FOCUS_PLACE_INFO:
-    case MainStatusEnum.NOT_COMMENT_SECTION:
+    case MainStatusEnum.NOT_REVIEW_SECTION:
     case MainStatusEnum.READY_TO_START:
       if (!mainVariables.isCurrentUrlValid) {
         return MainStatusEnum.WRONG_URL;
@@ -90,8 +111,8 @@ function rejudgeMainStatus(mainVariables: MainVariable): MainStatusEnum {
       if (!mainVariables.hasFoundFocusPlace) {
         return MainStatusEnum.NO_FOCUS_PLACE_INFO;
       }
-      if (!mainVariables.hasFoundCommentSection) {
-        return MainStatusEnum.NOT_COMMENT_SECTION;
+      if (!mainVariables.hasFoundReviewSection) {
+        return MainStatusEnum.NOT_REVIEW_SECTION;
       }
       return MainStatusEnum.READY_TO_START;
     default:

@@ -5,7 +5,7 @@ export const MainStatusButtonTextMap = new Map<MainStatusEnum, MainButtonTextEnu
   [MainStatusEnum.AWAIT_DETECT, MainButtonTextEnum.START_DETECT],
   [MainStatusEnum.WRONG_URL, MainButtonTextEnum.RE_DETECT],
   [MainStatusEnum.NO_FOCUS_PLACE_INFO, MainButtonTextEnum.RE_DETECT],
-  [MainStatusEnum.NOT_COMMENT_SECTION, MainButtonTextEnum.RE_DETECT],
+  [MainStatusEnum.NOT_REVIEW_SECTION, MainButtonTextEnum.RE_DETECT],
   [MainStatusEnum.READY_TO_START, MainButtonTextEnum.START_LOAD],
   [MainStatusEnum.LOADING, MainButtonTextEnum.RE_LOAD],
   [MainStatusEnum.FAIL_LOAD, MainButtonTextEnum.STOP_LOAD],

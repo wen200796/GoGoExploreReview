@@ -7,6 +7,6 @@ export interface MainVariable {
   currentPageUrl?: string;
   isCurrentUrlValid: boolean;
   hasFoundFocusPlace: boolean;
-  plaveBasicInfo?: PlaceBasicInfo;
-  hasFoundCommentSection: boolean;
+  placeBasicInfo?: PlaceBasicInfo;
+  hasFoundReviewSection: boolean;
 }

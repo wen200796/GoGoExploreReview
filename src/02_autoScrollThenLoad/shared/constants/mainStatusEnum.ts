@@ -2,7 +2,7 @@ export enum MainStatusEnum {
     AWAIT_DETECT = 'MS00',
     WRONG_URL = 'MS01',
     NO_FOCUS_PLACE_INFO = 'MS02',
-    NOT_COMMENT_SECTION = 'MS03',
+    NOT_REVIEW_SECTION = 'MS03',
     READY_TO_START = 'MS04',
     LOADING = 'MS05',
     FAIL_LOAD = 'MS06',
