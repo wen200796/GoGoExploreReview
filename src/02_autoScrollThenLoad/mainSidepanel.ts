@@ -16,7 +16,7 @@ const mainStatusFunctionMap = new Map<MainStatusEnum, StatusFunction>([
   [MainStatusEnum.WRONG_URL, detectFocusPlace],
   [MainStatusEnum.NO_FOCUS_PLACE_INFO, detectFocusPlace],
   [MainStatusEnum.NOT_REVIEW_SECTION, detectFocusPlace],
-  [MainStatusEnum.READY_TO_START, detectFocusPlace]
+  [MainStatusEnum.READY_TO_START, detectReviewSection]
 ])
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -79,19 +79,22 @@ document.addEventListener('DOMContentLoaded', () => {
     mainButton.innerText = MainStatusButtonTextMap.get(mainVariables.mainStatus) ?? MainButtonTextEnum.RE_DETECT;
     mainButton.style.backgroundColor = MainStatusColorMap.get(mainVariables.mainStatus) ?? ColorEnum.OPERATE_BLUE;
 
-
-    const detectNothing: string = '未偵測到資訊';
+    const detectNoFocusPlace: string = '未偵測到關注地點';
+    const detectNothingForReview: string = '未偵測到資訊 (需切換至評論區)';
     if (mainVariables.hasFoundFocusPlace) {
       placeName.innerText = mainVariables.placeBasicInfo?.name ?? '偵測異常';
     } else {
-      placeName.innerText = detectNothing;
+      placeName.innerText = detectNoFocusPlace;
     }
 
 
     if (mainVariables.hasFoundReviewSection) {
       console.log('已找到評論區');
-      placeShowStarRating.innerText = mainVariables.placeBasicInfo?.showStarRating?.toString() ?? detectNothing;
-      placeShowTotalReview.innerText = mainVariables.placeBasicInfo?.showTotalReview?.toString() ?? detectNothing;
+      placeShowStarRating.innerText = mainVariables.placeBasicInfo?.showStarRating?.toString() ?? detectNothingForReview;
+      placeShowTotalReview.innerText = mainVariables.placeBasicInfo?.showTotalReview?.toLocaleString("zh-TW") ?? detectNothingForReview;
+    } else {
+      placeShowStarRating.innerText = detectNothingForReview;
+      placeShowTotalReview.innerText = detectNothingForReview
     }
   })
 
@@ -118,4 +121,34 @@ function rejudgeMainStatus(mainVariables: MainVariable): MainStatusEnum {
     default:
       throw new Error('Invalid main status');
   }
+}
+
+async function detectReviewSection(mainVariables: MainVariable): Promise<void> {
+  console.log('detecting comment section')
+  try {
+    const detectResult: any = await loadActiveTabReviews(); // 使用 await 等待結果
+    console.log('detectResult:', detectResult);
+  } catch (error) {
+    console.error("Failed to check Active Tab Comment Section", error);
+  }
+
+}
+
+function loadActiveTabReviews(): Promise<any> {
+  return new Promise((resolve, reject) => {
+    chrome.runtime.sendMessage({ action: "LOAD_REVIEWS" }, (response: any) => {
+      if (chrome.runtime.lastError) {
+        console.error("Error:", chrome.runtime.lastError.message);
+        reject(chrome.runtime.lastError.message); // 發生錯誤時拒絕 Promise
+        return;
+      }
+
+      if (response) {
+        resolve(response); // 回應成功時回傳結果
+      } else {
+        console.error("無法取得目前分頁是否切換到評論區塊");
+        resolve(0);
+      }
+    });
+  });
 }

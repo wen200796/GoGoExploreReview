@@ -1,0 +1,5 @@
+export enum googlePlaceHtmlElement {
+  PLACE_SECTION_TAB = '.hh2c6',
+  PLACE_REVIEW_SECTION_SHOW_STAR_RATING = '.YTkVxc',
+  PLACE_SINGLE_REVIEW_WITHOUT_REVIEWER_INFO = '.jftiEf'
+}
