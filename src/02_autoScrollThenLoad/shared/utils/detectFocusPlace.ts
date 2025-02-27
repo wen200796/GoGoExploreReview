@@ -72,7 +72,7 @@ function getActiveTabUrl(): Promise<string> {
 
 
 async function detectReviewSection(mainVariables: MainVariable): Promise<void> {
-  console.log('detecting comment section')
+  console.log('detecting review section')
   try {
     const detectResult: reviewSectionDetectBasicInfo = await checkActiveTabReviewSectionInfo(); // 使用 await 等待結果
     if (detectResult.hasFoundReviewSection) {
@@ -84,7 +84,7 @@ async function detectReviewSection(mainVariables: MainVariable): Promise<void> {
     }
 
   } catch (error) {
-    console.error("Failed to check Active Tab Comment Section", error);
+    console.error("Failed to check Active Tab Review Section", error);
   }
 
 }

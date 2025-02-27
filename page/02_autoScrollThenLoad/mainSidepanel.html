@@ -86,6 +86,22 @@
       font-size: 16px;
       color: #333;
     }
+
+    #redetect-button {
+      background: none;
+      border: none;
+      color: #555;
+      /* 深灰色 */
+      cursor: pointer;
+      font-size: 16px;
+      padding: 0;
+      margin-left: 10px;
+    }
+
+    #redetect-button:hover {
+      color: #000;
+      /* 懸停時變為黑色 */
+    }
   </style>
 </head>
 
@@ -101,12 +117,13 @@
             id="check-review-block-text"></span>並且已切換至評論區塊</span></p>
       </div>
 
-      <p>地點名稱：<span class="place-info" id = "place-name">未偵測到資訊</span></p>
-      <p>顯示星星數：<span class="place-info" id = "place-show-star-rating">未偵測到資訊</span></p>
-      <p>評論則數：<span class="place-info" id = "place-show-total-review">未偵測到資訊</span></p>
+      <p>地點名稱：<span class="place-info" id="place-name">未偵測到資訊</span></p>
+      <p>顯示星星數：<span class="place-info" id="place-show-star-rating">未偵測到資訊</span></p>
+      <p>評論則數：<span class="place-info" id="place-show-total-review">未偵測到資訊</span></p>
       <div class="status">狀態：<span id="main-status">尚未偵測頁面</span></div>
       <div class="button">
         <button id="main-button">偵測當前頁面</button>
+        <button id="redetect-button" title="重新偵測" style="display: none;"><i class="fas fa-redo"></i></button>
       </div>
     </div>
     <div class="dashboard">儀錶板區塊</div>
