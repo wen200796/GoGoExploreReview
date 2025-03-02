@@ -5,10 +5,10 @@ import { MainStatusDisplayTextMap } from "./shared/config/mainStatusInfo/mainSta
 import { MainButtonTextEnum } from "./shared/constants/MainButtonTextEnum.js";
 import { MainStatusDisplayText } from "./shared/constants/mainStatusDisplayText.js";
 import { MainStatusEnum } from "./shared/constants/mainStatusEnum.js";
+import { reviewDetail } from "./shared/models/reviewDetail.js";
 import { MainVariable } from "./shared/types/mainVariable.js";
 import { detectFocusPlace } from "./shared/utils/detectFocusPlace.js";
 import { loadReviews } from "./shared/utils/loadReviews.js";
-
 
 
 type StatusFunction = (mainVariable: MainVariable) => void;
@@ -21,6 +21,14 @@ const mainStatusFunctionMap = new Map<MainStatusEnum, StatusFunction>([
   [MainStatusEnum.DONE_LOADING, loadReviews]
 ])
 
+let doneLoadReviews: reviewDetail[] = []; // 已載入的評論
+let doneAnalyzeReviews: reviewDetail[] = []; // 已分析的評論
+
+export function setupDoneLoadReviews(input: reviewDetail[]): void {
+  doneLoadReviews = input;
+}
+
+
 document.addEventListener('DOMContentLoaded', () => {
   console.log('DOM fully loaded and parsed');
 
@@ -30,12 +38,19 @@ document.addEventListener('DOMContentLoaded', () => {
     hasFoundFocusPlace: false,
     hasFoundReviewSection: false
   };
-  const mainButton = document.getElementById('main-button');
-  const redectButton = document.getElementById('redetect-button');
-  const mainStatusTextElement = document.getElementById('main-status');
-  const placeName = document.getElementById('place-name');
-  const placeShowStarRating = document.getElementById('place-show-star-rating');
-  const placeShowTotalReview = document.getElementById('place-show-total-review');
+
+
+
+
+  const mainButton = document.getElementById('main-button') as HTMLElement;
+  const redetectButton = document.getElementById('redetect-button') as HTMLElement;
+  const reloadButton = document.getElementById('reload-button') as HTMLElement;
+  const mainStatusTextElement = document.getElementById('main-status') as HTMLElement;
+  const placeName = document.getElementById('place-name') as HTMLElement;
+  const placeShowStarRating = document.getElementById('place-show-star-rating') as HTMLElement;
+  const placeShowTotalReview = document.getElementById('place-show-total-review') as HTMLElement;
+  const loadResult = document.getElementById('load-result') as HTMLElement;
+  const doneLoadShowElements: NodeListOf<Element> = document.querySelectorAll('.done-load-show');
 
   if (!mainStatusTextElement || mainStatusTextElement.innerText === '') {
     console.error("找不到主狀態！");
@@ -49,8 +64,23 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
-  if (!redectButton) {
+  if (!redetectButton) {
     console.error("找不到重新偵測按鈕！");
+    return;
+  }
+
+  if (!reloadButton) {
+    console.error("找不到重新載入按鈕！");
+    return;
+  }
+
+  if (!loadResult) {
+    console.error("找不到載入結果元素！");
+    return;
+  }
+
+  if (!doneLoadShowElements || doneLoadShowElements.length === 0) {
+    console.error("找不到載入完成顯示元素！");
     return;
   }
 
@@ -73,55 +103,59 @@ document.addEventListener('DOMContentLoaded', () => {
 
   mainButton.addEventListener('click', async () => {
     console.log('main button clicked');
-    mainVariables.mainStatus = MainStatusDisplayTextMap.getKey(mainStatusTextElement.innerText) as MainStatusEnum;
-    redectButton.style.display = 'none';
-    const func = mainStatusFunctionMap.get(mainVariables.mainStatus);
-    if (func) {
-      await func(mainVariables);  // 執行函數，並傳遞 mainVariable 作為參數
-    } else {
-      mainStatusTextElement.innerText = MainStatusDisplayText.ERROR;
-      return;
-    }
+    await ActionBeforeRejudge(mainVariables);
 
     mainVariables.mainStatus = rejudgeMainStatus(mainVariables);
-    mainStatusTextElement.innerText = MainStatusDisplayTextMap.getValue(mainVariables.mainStatus) ?? MainStatusDisplayText.ERROR;
-    mainButton.innerText = MainStatusButtonTextMap.get(mainVariables.mainStatus) ?? MainButtonTextEnum.RE_DETECT;
-    mainButton.style.backgroundColor = MainStatusColorMap.get(mainVariables.mainStatus) ?? ColorEnum.OPERATE_BLUE;
 
-    const detectNoFocusPlace: string = '未偵測到關注地點';
-    const detectNothingForReview: string = '未偵測到資訊 (需切換至評論區)';
-    if (mainVariables.hasFoundFocusPlace) {
-      placeName.innerText = mainVariables.placeBasicInfo?.name ?? '偵測異常';
-    } else {
-      placeName.innerText = detectNoFocusPlace;
-    }
-
-    if (mainVariables.hasFoundReviewSection) {
-      placeShowStarRating.innerText = mainVariables.placeBasicInfo?.showStarRating?.toString() ?? detectNothingForReview;
-      placeShowTotalReview.innerText = mainVariables.placeBasicInfo?.showTotalReview?.toLocaleString("zh-TW") ?? detectNothingForReview;
-    } else {
-      placeShowStarRating.innerText = detectNothingForReview;
-      placeShowTotalReview.innerText = detectNothingForReview
-    }
-
-    if (mainVariables.mainStatus === MainStatusEnum.DONE_LOADING) {
-      redectButton.style.display = 'block';
-    }
+    ActionAfterRejudge(mainVariables);
   })
 
-  redectButton.addEventListener('click', async () => {
+  redetectButton.addEventListener('click', async () => {
     console.log('redetect button clicked');
     mainVariables.mainStatus = MainStatusEnum.AWAIT_DETECT;
-    redectButton.style.display = 'none';
+    await ActionBeforeRejudge(mainVariables);
+
+    mainVariables.mainStatus = rejudgeMainStatus(mainVariables);
+
+    ActionAfterRejudge(mainVariables);
+  })
+
+  reloadButton.addEventListener('click', async () => {
+    console.log('redetect button clicked');
+    mainVariables.mainStatus = MainStatusEnum.AWAIT_DETECT;
+    await ActionBeforeRejudge(mainVariables);
+
+    mainVariables.mainStatus = rejudgeMainStatus(mainVariables);
+
+    ActionAfterRejudge(mainVariables);
+
+    // 重新載入需要第二次觸發 ActionBeforeRejudge
+
+    await ActionBeforeRejudge(mainVariables);
+
+    mainVariables.mainStatus = rejudgeMainStatus(mainVariables);
+
+    ActionAfterRejudge(mainVariables);
+
+
+  })
+
+  async function ActionBeforeRejudge(mainVariables: MainVariable): Promise<void> {
+    doneLoadShowElements.forEach((button) => {
+      (button as HTMLElement).style.display = 'none';
+    });
     const func = mainStatusFunctionMap.get(mainVariables.mainStatus);
     if (func) {
       await func(mainVariables);  // 執行函數，並傳遞 mainVariable 作為參數
     } else {
-      mainStatusTextElement.innerText = MainStatusDisplayText.ERROR;
-      return;
+      if (mainStatusTextElement) {
+        mainStatusTextElement.innerText = MainStatusDisplayText.ERROR;
+        return;
+      }
     }
+  }
 
-    mainVariables.mainStatus = rejudgeMainStatus(mainVariables);
+  async function ActionAfterRejudge(mainVariables: MainVariable): Promise<void> {
     mainStatusTextElement.innerText = MainStatusDisplayTextMap.getValue(mainVariables.mainStatus) ?? MainStatusDisplayText.ERROR;
     mainButton.innerText = MainStatusButtonTextMap.get(mainVariables.mainStatus) ?? MainButtonTextEnum.RE_DETECT;
     mainButton.style.backgroundColor = MainStatusColorMap.get(mainVariables.mainStatus) ?? ColorEnum.OPERATE_BLUE;
@@ -143,10 +177,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (mainVariables.mainStatus === MainStatusEnum.DONE_LOADING) {
-      redectButton.style.display = 'block';
+      doneLoadShowElements.forEach((button) => {
+        (button as HTMLElement).style.display = 'block';
+      });
+      loadResult.innerText = `${doneLoadReviews.length} / ${mainVariables.placeBasicInfo?.showTotalReview?.toLocaleString("zh-TW")} 筆評論`;
     }
-  })
 
+  }
 
 });
 
@@ -174,3 +211,4 @@ function rejudgeMainStatus(mainVariables: MainVariable): MainStatusEnum {
       throw new Error('Invalid main status');
   }
 }
+

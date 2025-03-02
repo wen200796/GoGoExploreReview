@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>評論篩選介面</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    .filter-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .filter-button {
+      padding: 5px 10px;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    .selected {
+      background-color: #007bff;
+      color: white;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-size: 12px;
+    }
+
+    .tag-green {
+      background-color: #4caf50;
+      color: white;
+    }
+
+    .tag-orange {
+      background-color: #ff9800;
+      color: white;
+    }
+
+    .review {
+      border-bottom: 1px solid #ddd;
+      padding: 15px 0;
+    }
+
+    .review img {
+      width: 100px;
+      height: auto;
+      border-radius: 5px;
+      margin-top: 10px;
+    }
+
+    .rating {
+      color: #f4c542;
+    }
+  </style>
+</head>
+
+<body>
+  <h2>篩選後評論總數: 158 / 356</h2>
+  <div class="filter-container">
+    <button class="filter-button selected">任一選取條件</button>
+    <button class="filter-button">所有選取條件</button>
+    <button class="filter-button">有圖片</button>
+    <button class="filter-button selected tag-green">時間一年內</button>
+    <button class="filter-button tag-purple">有商家回覆</button>
+    <button class="filter-button">+ 添加更多條件</button>
+  </div>
+
+  <h3>排序</h3>
+  <button class="filter-button">最新</button>
+  <button class="filter-button">最高</button>
+  <button class="filter-button">最低</button>
+
+  <div class="review">
+    <p class="rating">★★★★★ <span>4 個月前</span></p>
+    <p><strong>大推 👍👍👍！</strong></p>
+    <p>這家店的水餃讓人驚豔，我點了高麗菜和韭菜的水餃</p>
+    <span class="tag tag-green">時間 一年內</span>
+  </div>
+
+  <div class="review">
+    <p class="rating">★★★★★ <span>3 個月前</span></p>
+    <p><strong>店內環境還算寬敞</strong></p>
+    <p>座位數尚可應付用餐時段大人流，韭菜水餃超級好吃...</p>
+    <span class="tag tag-green">時間 一年內</span>
+    <span class="tag tag-orange">有圖片</span>
+    <br>
+    <img src="dumpling.jpg" alt="水餃">
+    <img src="noodle.jpg" alt="麵食">
+  </div>
+</body>
+
+</html>

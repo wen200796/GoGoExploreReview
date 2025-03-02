@@ -1,3 +1,4 @@
+import { setupDoneLoadReviews } from "../../mainSidepanel.js";
 import { MainStatusEnum } from "../constants/mainStatusEnum.js";
 import { MainVariable } from "../types/mainVariable.js";
 import { detectFocusPlace } from "./detectFocusPlace.js";
@@ -10,10 +11,11 @@ export async function loadReviews(mainVariables: MainVariable): Promise<void> {
     return;
   }
   try {
-    const detectResult: any = await loadActiveTabReviews(); // 使用 await 等待結果
-    console.log('detectResult:', detectResult);
-    if (detectResult) {
+    const loadResult: any = await loadActiveTabReviews(); // 使用 await 等待結果
+    console.log('loadResult:', loadResult);
+    if (loadResult && loadResult.loadReviews.length > 0) {
       mainVariables.mainStatus = MainStatusEnum.DONE_LOADING;
+      setupDoneLoadReviews(loadResult.loadReviews);
       return;
     }
     mainVariables.mainStatus = MainStatusEnum.FAIL_LOAD;

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>評論篩選與顯示</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    .filter-container,
+    .review-container {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .filter-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .filter-button {
+      padding: 5px 10px;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    .filter-button.active {
+      background-color: #007bff;
+      color: white;
+    }
+
+    .review {
+      border-bottom: 1px solid #eee;
+      padding: 15px;
+    }
+
+    .review-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      background: #ccc;
+      border-radius: 50%;
+    }
+
+    .rating {
+      color: gold;
+    }
+
+    .review-content {
+      margin-top: 10px;
+    }
+
+    .review-image {
+      width: 100px;
+      height: auto;
+      margin-top: 10px;
+      border-radius: 5px;
+    }
+
+    .tag {
+      background: green;
+      color: white;
+      padding: 3px 5px;
+      border-radius: 3px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="filter-container">
+    <button class="filter-button active">任一選取條件</button>
+    <button class="filter-button">所有選取條件</button>
+    <button class="filter-button">有圖片</button>
+    <button class="filter-button">時間 一年內</button>
+    <button class="filter-button">有商家回覆</button>
+  </div>
+
+  <div class="review-container">
+    <div class="review">
+      <div class="review-header">
+        <div class="avatar"></div>
+        <div>
+          <div class="rating">★★★★★</div>
+          <div>4 個月前</div>
+        </div>
+      </div>
+      <div class="review-content">
+        <p>大推 👍👍👍！這家店的水餃讓人驚豔，我點了高麗菜和韭菜的水餃。</p>
+        <span class="tag">時間 一年內</span>
+      </div>
+    </div>
+    <div class="review">
+      <div class="review-header">
+        <div class="avatar"></div>
+        <div>
+          <div class="rating">★★★★★</div>
+          <div>3 個月前</div>
+        </div>
+      </div>
+      <div class="review-content">
+        <p>店內環境還算寬敞，座位數尚可應付用餐時段大人流，韭菜水餃超級好吃！</p>
+        <span class="tag">時間 一年內</span>
+        <span class="tag" style="background: orange;">有圖片</span>
+        <br>
+        <img class="review-image" src="dumplings.jpg" alt="水餃">
+        <img class="review-image" src="noodles.jpg" alt="麵食">
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

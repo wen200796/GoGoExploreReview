@@ -72,7 +72,7 @@
 
     .status {
       text-align: center;
-      margin: 20px 0;
+      margin: 10px 0;
       font-size: 14px;
     }
 
@@ -87,7 +87,7 @@
       color: #333;
     }
 
-    #redetect-button {
+    .button button.reoperate-button {
       background: none;
       border: none;
       color: #555;
@@ -95,10 +95,10 @@
       cursor: pointer;
       font-size: 16px;
       padding: 0;
-      margin-left: 10px;
+      margin-left: 25px;
     }
 
-    #redetect-button:hover {
+    .reoperate-button:hover {
       color: #000;
       /* 懸停時變為黑色 */
     }
@@ -121,9 +121,14 @@
       <p>顯示星星數：<span class="place-info" id="place-show-star-rating">未偵測到資訊</span></p>
       <p>評論則數：<span class="place-info" id="place-show-total-review">未偵測到資訊</span></p>
       <div class="status">狀態：<span id="main-status">尚未偵測頁面</span></div>
+      <div class="done-load-show" style="display: none; text-align: center; margin: 10px 0;">已載入 <span
+          id="load-result"></span></div>
       <div class="button">
         <button id="main-button">偵測當前頁面</button>
-        <button id="redetect-button" title="重新偵測" style="display: none;"><i class="fas fa-redo"></i></button>
+        <button id="reload-button" class="reoperate-button done-load-show" title="重新載入" style="display: none;"><i
+            class="fas fa-repeat"></i></button>
+        <button id="redetect-button" class="reoperate-button done-load-show" title="重新偵測" style="display: none;"><i
+            class="fas fa-magnifying-glass-location"></i></button>
       </div>
     </div>
     <div class="dashboard">儀錶板區塊</div>

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>評論篩選</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: auto;
+    }
+
+    .filters,
+    .reviews {
+      border: 1px solid #ddd;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    .filters {
+      background: #f9f9f9;
+    }
+
+    .filter-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .button {
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      border: none;
+    }
+
+    .button.active {
+      background: #007bff;
+      color: white;
+    }
+
+    .button.green {
+      background: #28a745;
+      color: white;
+    }
+
+    .button.orange {
+      background: #ff9800;
+      color: white;
+    }
+
+    .review {
+      border-bottom: 1px solid #ddd;
+      padding: 15px 0;
+      display: flex;
+      gap: 10px;
+    }
+
+    .avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: #ccc;
+    }
+
+    .content {
+      flex: 1;
+    }
+
+    .stars {
+      color: gold;
+    }
+
+    .meta {
+      font-size: 0.9em;
+      color: gray;
+    }
+
+    .tags {
+      margin-top: 5px;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 3px;
+      font-size: 0.8em;
+    }
+
+    .tag.green {
+      background: #28a745;
+      color: white;
+    }
+
+    .tag.orange {
+      background: #ff9800;
+      color: white;
+    }
+
+    .images {
+      margin-top: 10px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .images img {
+      width: 100px;
+      height: auto;
+      border-radius: 5px;
+    }
+
+    .mode-switch {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .multi-select-note {
+      margin: 10px 0;
+      font-size: 0.9em;
+      color: gray;
+    }
+
+    .sort-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h3>篩選後評論總數: 158 / 356</h3>
+
+    <div class="filters">
+      <div class="filter-header">
+        <div>
+          <label>顯示評論符合：</label>
+          <button class="button active">任一選取條件</button>
+          <button class="button">所有選取條件</button>
+        </div>
+        <div class="mode-switch">
+          <label>閱讀模式：</label>
+          <button class="button active">經典圖文清單</button>
+          <button class="button">散點圖表</button>
+        </div>
+      </div>
+      <div class="multi-select-note">條件可複選，點選按鈕後可變更該條件設定</div>
+      <div class="buttons">
+        <button class="button orange">有圖片</button>
+        <button class="button green">時間 一年以內</button>
+        <button class="button">有商家回覆</button>
+        <button class="button">+ 添加更多條件</button>
+      </div>
+    </div>
+
+    <div class="sort-bar">
+      <div>
+        <label>排序：</label>
+        <button class="button">最新</button>
+        <button class="button">最高</button>
+        <button class="button">最低</button>
+      </div>
+      <div>
+        符合 1 至 3 項條件
+      </div>
+    </div>
+
+    <div class="reviews">
+      <div class="review">
+        <div class="avatar"></div>
+        <div class="content">
+          <div class="stars">★★★★★</div>
+          <div class="meta">4 個月前</div>
+          <p>大推 👍👍👍！這家店的水餃讓人驚豔，我點了高麗菜和韭菜的水餃。</p>
+          <div class="tags">
+            <span class="tag green">時間 一年以內</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="review">
+        <div class="avatar"></div>
+        <div class="content">
+          <div class="stars">★★★★★</div>
+          <div class="meta">3 個月前</div>
+          <p>店內環境還算寬敞，座位數尚可應付用餐時段大人流。韭菜水餃超級好吃 … <a href="#">全文</a></p>
+          <div class="tags">
+            <span class="tag green">時間 一年以內</span>
+            <span class="tag orange">有圖片</span>
+          </div>
+          <div class="images">
+            <img src="dumplings.jpg" alt="水餃">
+            <img src="noodles.jpg" alt="麵食">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
