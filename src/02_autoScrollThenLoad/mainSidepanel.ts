@@ -18,14 +18,19 @@ const mainStatusFunctionMap = new Map<MainStatusEnum, StatusFunction>([
   [MainStatusEnum.NO_FOCUS_PLACE_INFO, detectFocusPlace],
   [MainStatusEnum.NOT_REVIEW_SECTION, detectFocusPlace],
   [MainStatusEnum.READY_TO_START, loadReviews],
-  [MainStatusEnum.DONE_LOADING, loadReviews]
+  [MainStatusEnum.DONE_LOADING, analyzeData],
+  [MainStatusEnum.DONE_ANALYZE, openPopupWindow]
 ])
 
 let doneLoadReviews: reviewDetail[] = []; // 已載入的評論
-let doneAnalyzeReviews: reviewDetail[] = []; // 已分析的評論
+let doneAnalyzeReviews: any = []; // 已分析的評論
 
 export function setupDoneLoadReviews(input: reviewDetail[]): void {
   doneLoadReviews = input;
+}
+
+export function setupDoneAnalyzeReviews(input: any): void {
+  doneAnalyzeReviews = input;
 }
 
 
@@ -42,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-  const mainButton = document.getElementById('main-button') as HTMLElement;
+  const mainButton = document.getElementById('main-button') as HTMLButtonElement;
   const redetectButton = document.getElementById('redetect-button') as HTMLElement;
   const reloadButton = document.getElementById('reload-button') as HTMLElement;
   const mainStatusTextElement = document.getElementById('main-status') as HTMLElement;
@@ -144,6 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
     doneLoadShowElements.forEach((button) => {
       (button as HTMLElement).style.display = 'none';
     });
+    mainButton.disabled = false;
     const func = mainStatusFunctionMap.get(mainVariables.mainStatus);
     if (func) {
       await func(mainVariables);  // 執行函數，並傳遞 mainVariable 作為參數
@@ -176,16 +182,34 @@ document.addEventListener('DOMContentLoaded', () => {
       placeShowTotalReview.innerText = detectNothingForReview
     }
 
-    if (mainVariables.mainStatus === MainStatusEnum.DONE_LOADING) {
-      doneLoadShowElements.forEach((button) => {
-        (button as HTMLElement).style.display = 'block';
-      });
-      loadResult.innerText = `${doneLoadReviews.length} / ${mainVariables.placeBasicInfo?.showTotalReview?.toLocaleString("zh-TW")} 筆評論`;
+    if (mainVariables.placeBasicInfo?.showTotalReview === 0) {
+      mainButton.disabled = true;
+      redetectButton.style.display = 'block';
+      mainButton.innerText = '無評論可載入';
     }
 
+    if (mainVariables.mainStatus === MainStatusEnum.READY_TO_START){
+      redetectButton.style.display = 'block';
+    }
+  
+
+  if (mainVariables.mainStatus === MainStatusEnum.DONE_LOADING || mainVariables.mainStatus === MainStatusEnum.DONE_ANALYZE) {
+    doneLoadShowElements.forEach((button) => {
+      (button as HTMLElement).style.display = 'block';
+    });
+    console.log('im here ');
+    loadResult.innerText = `${doneLoadReviews.length} / ${mainVariables.placeBasicInfo?.showTotalReview?.toLocaleString("zh-TW")} 筆評論`;
   }
 
-});
+  if (mainVariables.mainStatus === MainStatusEnum.DONE_LOADING && doneLoadReviews.length === 0) {
+    mainButton.disabled = true;
+    doneLoadShowElements.forEach((button) => {
+      (button as HTMLElement).style.display = 'block';
+    });
+    mainButton.innerText = '無評論可分析';
+  }
+}}
+);
 
 
 function rejudgeMainStatus(mainVariables: MainVariable): MainStatusEnum {
@@ -207,8 +231,26 @@ function rejudgeMainStatus(mainVariables: MainVariable): MainStatusEnum {
       return MainStatusEnum.READY_TO_START;
     case MainStatusEnum.DONE_LOADING:
       return MainStatusEnum.DONE_LOADING;
+    case MainStatusEnum.DONE_ANALYZE:
+      return MainStatusEnum.DONE_ANALYZE;
     default:
       throw new Error('Invalid main status');
   }
+}
+
+function analyzeData(mainvaribles: MainVariable) {
+  console.log('analyzeData');
+  mainvaribles.mainStatus = MainStatusEnum.ANALYZING;
+  mainvaribles.mainStatus = MainStatusEnum.DONE_ANALYZE;
+}
+
+function openPopupWindow() {
+  const popupUrl = '/page/03_filterModeReview/filteModeReviewV1_copy_5.html'; // 要開啟的網頁
+  const popupOptions = 'width=1000,height=900,scrollbars=yes';
+  const popupWindow = window.open(popupUrl, 'popupWindow', popupOptions);
+
+  popupWindow?.addEventListener('load', () => {
+    popupWindow.postMessage(doneLoadReviews, window.location.origin);
+  });
 }
 
