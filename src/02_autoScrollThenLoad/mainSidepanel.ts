@@ -1,3 +1,4 @@
+import { transmitReviewData } from "../common/models/transmitReviewData.js";
 import { ColorEnum } from "../common/constants/colorEnum.js";
 import { MainStatusButtonTextMap } from "./shared/config/mainStatusInfo/mainStatusButtonMap.js";
 import { MainStatusColorMap } from "./shared/config/mainStatusInfo/mainStatusColorMap.js";
@@ -188,27 +189,28 @@ document.addEventListener('DOMContentLoaded', () => {
       mainButton.innerText = '無評論可載入';
     }
 
-    if (mainVariables.mainStatus === MainStatusEnum.READY_TO_START){
+    if (mainVariables.mainStatus === MainStatusEnum.READY_TO_START) {
       redetectButton.style.display = 'block';
     }
-  
 
-  if (mainVariables.mainStatus === MainStatusEnum.DONE_LOADING || mainVariables.mainStatus === MainStatusEnum.DONE_ANALYZE) {
-    doneLoadShowElements.forEach((button) => {
-      (button as HTMLElement).style.display = 'block';
-    });
-    console.log('im here ');
-    loadResult.innerText = `${doneLoadReviews.length} / ${mainVariables.placeBasicInfo?.showTotalReview?.toLocaleString("zh-TW")} 筆評論`;
-  }
 
-  if (mainVariables.mainStatus === MainStatusEnum.DONE_LOADING && doneLoadReviews.length === 0) {
-    mainButton.disabled = true;
-    doneLoadShowElements.forEach((button) => {
-      (button as HTMLElement).style.display = 'block';
-    });
-    mainButton.innerText = '無評論可分析';
+    if (mainVariables.mainStatus === MainStatusEnum.DONE_LOADING || mainVariables.mainStatus === MainStatusEnum.DONE_ANALYZE) {
+      doneLoadShowElements.forEach((button) => {
+        (button as HTMLElement).style.display = 'block';
+      });
+      console.log('im here ');
+      loadResult.innerText = `${doneLoadReviews.length} / ${mainVariables.placeBasicInfo?.showTotalReview?.toLocaleString("zh-TW")} 筆評論`;
+    }
+
+    if (mainVariables.mainStatus === MainStatusEnum.DONE_LOADING && doneLoadReviews.length === 0) {
+      mainButton.disabled = true;
+      doneLoadShowElements.forEach((button) => {
+        (button as HTMLElement).style.display = 'block';
+      });
+      mainButton.innerText = '無評論可分析';
+    }
   }
-}}
+}
 );
 
 
@@ -249,8 +251,10 @@ function openPopupWindow() {
   const popupOptions = 'width=1000,height=900,scrollbars=yes';
   const popupWindow = window.open(popupUrl, 'popupWindow', popupOptions);
 
+  const toTransmitData: transmitReviewData = new transmitReviewData();
+  toTransmitData.doneLoadReviews = doneLoadReviews;
   popupWindow?.addEventListener('load', () => {
-    popupWindow.postMessage(doneLoadReviews, window.location.origin);
+    popupWindow.postMessage(toTransmitData, window.location.origin);
   });
 }
 

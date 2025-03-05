@@ -10,7 +10,8 @@
     "rootDir": "./src"
   },
   "include": [
-    "src/**/*"
+    "src/**/*",
+    "src/common/models/transmitReviewData.ts"
   ],
   "exclude": [
     "node_modules"
